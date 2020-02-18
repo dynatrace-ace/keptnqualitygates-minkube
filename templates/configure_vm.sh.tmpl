@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+echo "Adding apt sources"
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get update
+echo "installing helpers..." 
+apt-get install -y \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  software-properties-common \
+  git \
+  jq \
+  npm \
+  nano \
+  vim \
+  linux-headers-generic \
+  make \
+  patch \
+  gcc \
+  wget \
+  virtualbox \
+  docker-ce \
+  kubectl
+
+#echo "installing yq..."
+#snap install yq
+
+systemctl enable --now docker
+
+echo "installing kubectl..."
+apt-get install -y 
+
+echo "installing keptn cli..."
+wget https://github.com/keptn/keptn/releases/download/${keptn_release}/${keptn_release}_keptn-linux.tar
+tar xzf ${keptn_release}_keptn-linux.tar
+chmod +x keptn
+mv keptn /usr/local/bin/keptn
+
+#echo "allow password login..."
+#sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+#sed -i 's/#MaxSessions 10/MaxSessions 150/' /etc/ssh/sshd_config
+#systemctl restart sshd
+
+#mkdir kubectl
+#chmod 777 kubectl
+#mv ./kubectl /usr/local/bin/kubectl
+apt install -y 
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/${minikube_release}/minikube-linux-amd64 && chmod +x minikube
+cp minikube /usr/bin/
+#cd /usr/bin/
+sudo -u keptn -H minikube start --cpus 6 --memory 16000
+
+cd /home/${username}
+chmod +rwx -R /home/${username}/.kube/
+chmod +rwx -R /home/${username}/.minikube/
+
+#install keptn
+#keptn install --platform=kubernetes --use-case=quality-gates --gateway=NodePort --creds=creds.json
