@@ -9,13 +9,13 @@ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/s
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 apt-get update
+
 echo "installing helpers..." 
 apt-get install -y \
   apt-transport-https \
   ca-certificates \
   curl \
   software-properties-common \
-  git \
   jq \
   npm \
   nano \
@@ -29,13 +29,11 @@ apt-get install -y \
   docker-ce \
   kubectl
 
-#echo "installing yq..."
-#snap install yq
+echo "installing yq..."
+snap install yq
 
+echo "enabling docker..."
 systemctl enable --now docker
-
-echo "installing kubectl..."
-apt-get install -y 
 
 echo "installing keptn cli..."
 wget https://github.com/keptn/keptn/releases/download/${keptn_release}/${keptn_release}_keptn-linux.tar
@@ -48,14 +46,10 @@ mv keptn /usr/local/bin/keptn
 #sed -i 's/#MaxSessions 10/MaxSessions 150/' /etc/ssh/sshd_config
 #systemctl restart sshd
 
-#mkdir kubectl
-#chmod 777 kubectl
-#mv ./kubectl /usr/local/bin/kubectl
 apt install -y 
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/${minikube_release}/minikube-linux-amd64 && chmod +x minikube
 cp minikube /usr/bin/
-#cd /usr/bin/
-sudo -u keptn -H minikube start --cpus 6 --memory 16000
+sudo -u ${username} -H minikube start --cpus 12 --memory 48000
 
 cd /home/${username}
 chmod +rwx -R /home/${username}/.kube/
