@@ -5,7 +5,7 @@ variable "lab_prefix" {
 
 variable "gcloud_project" {
   description = "Name of GCloud project to spin up the bastion host"
-  default     = "detroit-acl-v2"
+  default     = "myProject"
 }
 
 variable "gcloud_zone" {
@@ -19,7 +19,7 @@ variable "gcloud_cred_file" {
 
 variable "instance_size" {
   description = "Size of the bastion host"
-  default     = "n1-standard-8"
+  default     = "n1-standard-16"
 }
 
 variable "ssh_pub_key" {
