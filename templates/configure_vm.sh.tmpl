@@ -27,7 +27,8 @@ apt-get install -y \
   wget \
   virtualbox \
   docker-ce \
-  kubectl
+  kubectl \
+  apache2
 
 echo "installing yq..."
 snap install yq
@@ -36,8 +37,14 @@ echo "enabling docker..."
 systemctl enable --now docker
 
 echo "installing keptn cli..."
-wget https://github.com/keptn/keptn/releases/download/${keptn_release}/${keptn_release}_keptn-linux.tar
-tar xzf ${keptn_release}_keptn-linux.tar
+#wget https://github.com/keptn/keptn/releases/download/${keptn_release}/${keptn_release}_keptn-linux.tar
+#tar xzf ${keptn_release}_keptn-linux.tar
+#chmod +x keptn
+#mv keptn /usr/local/bin/keptn
+
+echo "getting pre-release CLI"
+wget https://storage.googleapis.com/keptn-cli/latest/keptn-linux.tar.gz
+tar xzf keptn-linux.tar.gz
 chmod +x keptn
 mv keptn /usr/local/bin/keptn
 
@@ -46,14 +53,29 @@ mv keptn /usr/local/bin/keptn
 #sed -i 's/#MaxSessions 10/MaxSessions 150/' /etc/ssh/sshd_config
 #systemctl restart sshd
 
-apt install -y 
+#apt install -y 
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/${minikube_release}/minikube-linux-amd64 && chmod +x minikube
 cp minikube /usr/bin/
-sudo -u ${username} -H minikube start --cpus 12 --memory 48000
+minikube start --cpus 4 --memory 12000 --vm-driver=none
 
 cd /home/${username}
 chmod +rwx -R /home/${username}/.kube/
 chmod +rwx -R /home/${username}/.minikube/
 
-#install keptn
-#keptn install --platform=kubernetes --use-case=quality-gates --gateway=NodePort --creds=creds.json
+#install keptnq
+keptn install --platform=kubernetes --use-case=quality-gates --gateway=NodePort --creds=creds.json
+
+kubectl apply -f api-external.yaml
+
+
+echo "Installing Apache"
+sudo cp ~/000-default.conf /etc/apache2/sites-available/000-default.conf
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2enmod proxy_balancer
+sudo a2enmod lbmethod_byrequests
+sudo systemctl restart apache2
+
+echo "Keptn installation finished. You can reach the API through the following URL:"
+echo "http://${public_ip}/swagger-ui/"
+echo "Your keptn API token: $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)" 

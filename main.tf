@@ -52,7 +52,7 @@ resource "google_compute_firewall" "allow_https" {
 
   allow {
     protocol = "tcp"
-    ports    = [ "443" ]
+    ports    = [ "443", "30333", "80" ]
   }
 
   target_tags = [ "acl-${random_id.instance_id.hex}" ]
@@ -96,9 +96,9 @@ resource "google_compute_instance" "bastion" {
   }
 
  
-  provisioner "remote-exec" {
+  /*provisioner "remote-exec" {
     inline = [ "sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y" ]
-  }
+  }*/
 
   provisioner "file" {
     destination = "~/configure_vm.sh"
@@ -106,8 +106,9 @@ resource "google_compute_instance" "bastion" {
       "${path.module}/templates/configure_vm.sh.tmpl",
       {
         keptn_release     = var.keptn_release,
-        minikube_release  = var.minikube_release
-        username          = var.username
+        minikube_release  = var.minikube_release,
+        username          = var.username,
+        public_ip         = google_compute_instance.bastion.network_interface[0].access_config[0].nat_ip
       }
     )
   }
@@ -115,6 +116,16 @@ resource "google_compute_instance" "bastion" {
   provisioner "file" {
     source      = "${path.module}/templates/keptncreds.json"
     destination = "~/creds.json"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/templates/api-external.yaml"
+    destination = "~/api-external.yaml"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/templates/000-default.conf"
+    destination = "~/000-default.conf"
   }
 
   provisioner "remote-exec" {
