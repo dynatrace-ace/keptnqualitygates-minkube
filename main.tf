@@ -111,7 +111,6 @@ resource "google_compute_instance" "bastion" {
       "sudo ~/configure_vm.sh"
     ]
   }
-
 }
   
 output "bastion-ip" {

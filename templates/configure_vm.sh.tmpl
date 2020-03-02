@@ -25,7 +25,6 @@ apt-get install -y \
   patch \
   gcc \
   wget \
-  virtualbox \
   docker-ce \
   kubectl \
   apache2
@@ -42,7 +41,7 @@ echo "installing keptn cli..."
 #chmod +x keptn
 #mv keptn /usr/local/bin/keptn
 
-echo "getting pre-release CLI"
+echo "getting pre-release Keptn CLI"
 wget https://storage.googleapis.com/keptn-cli/latest/keptn-linux.tar.gz
 tar xzf keptn-linux.tar.gz
 chmod +x keptn
@@ -56,7 +55,7 @@ mv keptn /usr/local/bin/keptn
 #apt install -y 
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/${minikube_release}/minikube-linux-amd64 && chmod +x minikube
 cp minikube /usr/bin/
-minikube start --cpus 4 --memory 12000 --vm-driver=none
+minikube start --cpus 2 --memory 6000 --vm-driver=none
 
 cd /home/${username}
 chmod +rwx -R /home/${username}/.kube/
