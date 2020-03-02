@@ -2,8 +2,6 @@
 
 set -euo pipefail
 echo "Adding apt sources"
-wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -47,12 +45,11 @@ tar xzf keptn-linux.tar.gz
 chmod +x keptn
 mv keptn /usr/local/bin/keptn
 
-#echo "allow password login..."
+#echo "DISABLED BY DEFAULT - allow password login..."
 #sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
 #sed -i 's/#MaxSessions 10/MaxSessions 150/' /etc/ssh/sshd_config
 #systemctl restart sshd
 
-#apt install -y 
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/${minikube_release}/minikube-linux-amd64 && chmod +x minikube
 cp minikube /usr/bin/
 minikube start --cpus 2 --memory 6000 --vm-driver=none
@@ -64,7 +61,7 @@ chmod +rwx -R /home/${username}/.minikube/
 #install keptnq
 keptn install --platform=kubernetes --use-case=quality-gates --gateway=NodePort --creds=creds.json
 
-echo "Exposing keptn API"
+echo "Exposing Keptn API and Keptn Bridge"
 kubectl apply -f api-bridge-external.yaml
 
 
