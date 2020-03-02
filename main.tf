@@ -30,7 +30,7 @@ resource "google_compute_firewall" "allow_https" {
 
   allow {
     protocol = "tcp"
-    ports    = [ "443", "30333", "80", "81" ]
+    ports    = [ "80", "81" ]
   }
 
   target_tags = [ "acl-${random_id.instance_id.hex}" ]

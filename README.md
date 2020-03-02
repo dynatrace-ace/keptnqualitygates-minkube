@@ -10,6 +10,12 @@ It will execute the following steps:
 
 **note: For a fully automated install, the script deploys the latest master of the keptn CLI, as otherwise a creds.json file cannot be supplied in combination with platform=kubernetes.**
 
+## Requirements
+To run this script, terraform will provision the following
+1. 1 n1-standard-2 GCE instance (2vCores, 7.5GB RAM) with 50GB SSD
+1. 1 public IPv4 address attached to the GCE instance
+1. 1 firewall rule to open port 80 and 81
+
 ## Instructions
 
 1. Prepare Service Account and download JSON key credentials in GCP.

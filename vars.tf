@@ -49,7 +49,7 @@ variable "os" {
 
 variable "disk-size" {
   description = "Size of the disk"
-  default     = "100"
+  default     = "50"
 }
 
 variable "username" {
