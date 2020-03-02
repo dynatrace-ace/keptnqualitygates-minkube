@@ -15,28 +15,6 @@ provider "google" {
   region  = join("-", slice(split("-", var.gcloud_zone), 0, 2))
 }
 
-resource "google_compute_disk" "vagrantdisk" {
-  name  = "vagrant"
-  type  = "pd-ssd"
-  zone  = "${var.gcloud_zone}"
-  image = "${var.os}"
-
-  timeouts {
-  create = "60m"
-  }
-}
-
-resource "google_compute_image" "vagrantimg" {
-  name = "vagrantimg"
-  source_disk = "${google_compute_disk.vagrantdisk.self_link}"
-  licenses = [
-    "https://www.googleapis.com/compute/v1/projects/vm-options/global/licenses/enable-vmx",
-  ]
-  timeouts {
-  create = "60m"
-  }
-}
-
 # Terraform plugin for creating random ids
 resource "random_id" "instance_id" {
   byte_length = 8
@@ -52,7 +30,7 @@ resource "google_compute_firewall" "allow_https" {
 
   allow {
     protocol = "tcp"
-    ports    = [ "443", "30333", "80" ]
+    ports    = [ "443", "30333", "80", "81" ]
   }
 
   target_tags = [ "acl-${random_id.instance_id.hex}" ]
@@ -63,11 +41,10 @@ resource "google_compute_instance" "bastion" {
   name         = "${var.lab_prefix}-${random_id.instance_id.hex}"
   machine_type = var.instance_size
   zone         = var.gcloud_zone
-  min_cpu_platform = "Intel Haswell"
 
   boot_disk {
     initialize_params {
-      image = "${google_compute_image.vagrantimg.self_link}"
+      image = "${var.os}"
       type  = "pd-ssd"
       size  = "${var.disk-size}"
     }
@@ -119,8 +96,8 @@ resource "google_compute_instance" "bastion" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/templates/api-external.yaml"
-    destination = "~/api-external.yaml"
+    source      = "${path.module}/templates/api-bridge-external.yaml"
+    destination = "~/api-bridge-external.yaml"
   }
 
   provisioner "file" {

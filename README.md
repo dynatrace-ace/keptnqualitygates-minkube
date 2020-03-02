@@ -3,9 +3,12 @@ This repo will help you in setting up minikube on a GCE instance using terraform
 It will execute the following steps:
 1. Create a GCE instance with nested virtualization
 1. Install Ubuntu and all required packages
-1. Install Minikube and start an instance
-1. Install keptn
-1. Install apache2 as a reverse proxy and expose the Keptn API on port 80
+1. Install Minikube v1.2.0 (newer not supported) and start an instance
+1. Install Keptn Quality Gates usecase
+1. Expose the Keptn API on port 80
+1. Expose the Keptn Bridge on port 81
+
+**note: For a fully automated install, the script deploys the latest master of the keptn CLI, as otherwise a creds.json file cannot be supplied in combination with platform=kubernetes.**
 
 ## Instructions
 

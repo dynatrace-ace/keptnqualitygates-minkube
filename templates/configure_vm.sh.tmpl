@@ -65,7 +65,8 @@ chmod +rwx -R /home/${username}/.minikube/
 #install keptnq
 keptn install --platform=kubernetes --use-case=quality-gates --gateway=NodePort --creds=creds.json
 
-kubectl apply -f api-external.yaml
+echo "Exposing keptn API"
+kubectl apply -f api-bridge-external.yaml
 
 
 echo "Installing Apache"
@@ -76,6 +77,9 @@ sudo a2enmod proxy_balancer
 sudo a2enmod lbmethod_byrequests
 sudo systemctl restart apache2
 
-echo "Keptn installation finished. You can reach the API through the following URL:"
+echo "Keptn installation finished. "
+echo "You can reach the API through the following URL:"
 echo "http://${public_ip}/swagger-ui/"
 echo "Your keptn API token: $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)" 
+echo "You can reach the Keptn Bridge through the following URL:"
+echo "http://${public_ip}:81"
