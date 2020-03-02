@@ -4,6 +4,8 @@ It will execute the following steps:
 1. Create a GCE instance with nested virtualization
 1. Install Ubuntu and all required packages
 1. Install Minikube and start an instance
+1. Install keptn
+1. Install apache2 as a reverse proxy and expose the Keptn API on port 80
 
 ## Instructions
 
@@ -46,7 +48,7 @@ It will execute the following steps:
         $ terraform apply -var-file=/tmp/provision_acm.tfvars
         ```
     
-    1. The GCE ip will be outputed once completed.
+    1. The GCE ip will be outputed once completed, as well as the keptn api endpoint and API token
 
 1. Log on to the GCE instance
 
